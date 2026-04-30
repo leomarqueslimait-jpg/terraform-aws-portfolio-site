@@ -3,7 +3,7 @@ resource "aws_cloudfront_origin_access_control" "oac" {
   name                              = "portfolio-oac"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
-  signing_protocol                  = sigv4
+  signing_protocol                  = "sigv4"
 }
 
 resource "aws_cloudfront_distribution" "cdn" {
@@ -19,10 +19,11 @@ resource "aws_cloudfront_distribution" "cdn" {
 
   default_cache_behavior {
     target_origin_id       = "s3-portfolio" #send traffic to this origin
-    viewer_protocol_policy = "redicrect-to-https"
-    allowed_methods        = ["HTTPS", "HEAD"]
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["HTTPS", "HEAD"]
     compress               = true
+    default_ttl = 86400
 
     forwarded_values {
       query_string = false
@@ -46,5 +47,32 @@ resource "aws_cloudfront_distribution" "cdn" {
     cloudfront_default_certificate = true
   }
 
+  price_class = "PriceClass_200"
+
+
   tags = merge(var.tags, { Name = "portfolio-cdn" })
+}
+
+data "aws_iam_policy_document" "allow_cloudfront" {
+  statement {
+    effect  = "Allow"
+    actions = ["s3:GetObject"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    resources = ["${var.bucket_arn}/*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.cdn.arn]
+    }
+  }
+}
+resource "aws_s3_bucket_policy" "allow_cloudfront" {
+  bucket = var.bucket_id
+  policy = data.aws_iam_policy_document.allow_cloudfront
 }
