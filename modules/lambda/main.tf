@@ -10,6 +10,7 @@ resource "aws_lambda_function" "contact" {
   runtime          = "python3.12"
   handler          = "handler.lambda_handler"
   filename         = data.archive_file.lambda_zip.output_path
+  #redeploys python file if file has been changed
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   timeout          = 10
 

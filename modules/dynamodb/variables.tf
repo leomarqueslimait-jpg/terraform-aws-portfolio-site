@@ -1,5 +1,5 @@
 variable "contact_table_name" {
-  description = "Name of DynamoDB table fpr contact form submissions"
+  description = "Name of DynamoDB table for contact form submissions"
   type        = string
 }
 
