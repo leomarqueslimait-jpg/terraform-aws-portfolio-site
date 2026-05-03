@@ -7,6 +7,7 @@ resource "aws_cloudfront_origin_access_control" "oac" {
 }
 
 resource "aws_cloudfront_distribution" "cdn" {
+  aliases = [var.domain_name, "www.${domain.name}"]
   enabled             = true
   default_root_object = "index.html"
   comment             = "Portfolio site CDN"
@@ -23,7 +24,7 @@ resource "aws_cloudfront_distribution" "cdn" {
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["HTTPS", "HEAD"]
     compress               = true
-    default_ttl = 86400
+    default_ttl            = 86400
 
     forwarded_values {
       query_string = false
@@ -44,7 +45,9 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
   #SSL/TLS certificate, whuch is used in the HTTPS. default certificate  from AWS
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn      = var.acm_certificate_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 
   price_class = "PriceClass_200"

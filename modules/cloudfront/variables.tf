@@ -13,6 +13,17 @@ variable "bucket_arn" {
   type        = string
 }
 
+variable "acm_certificate_arn" {
+  description = "ACM certificate ARN from domain module - enables HTTPS on dustom domain"
+  type        = string
+
+}
+
+variable "domain_name" {
+  description = "Custom domain name - added as CloudFront alias"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags from locals in infra/main.tf"
   type        = map(string)

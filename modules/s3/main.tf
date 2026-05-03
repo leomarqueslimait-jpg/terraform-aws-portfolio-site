@@ -1,7 +1,7 @@
 resource "aws_s3_bucket" "static_website" {
   bucket = var.website_bucket_name
 
-tags = merge(var.tags, { Name = "portfolio-static-site" })
+  tags = merge(var.tags, { Name = "portfolio-static-site" })
 }
 
 resource "aws_s3_bucket_public_access_block" "static_website" {

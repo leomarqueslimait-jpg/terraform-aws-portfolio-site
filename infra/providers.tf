@@ -8,16 +8,17 @@ terraform {
   }
 
   backend "s3" {
-    bucket = var.state_bucket_name
-    key = portfolio/terraform.tfstate
-    region = "us-east-1"
+    bucket         = var.state_bucket_name
+    key            = portfolio / terraform.tfstate
+    region         = "us-east-1"
     dynamodb_table = var.dynamodb_table_name
-    encrypt = true
-}
+    encrypt        = true
+  }
 }
 
 provider "aws" {
   region = var.aws_region
+  alias  = "us_east_1"
 }
 
-  
+
