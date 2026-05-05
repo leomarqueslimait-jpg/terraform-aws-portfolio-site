@@ -7,7 +7,7 @@ resource "aws_cloudfront_origin_access_control" "oac" {
 }
 
 resource "aws_cloudfront_distribution" "cdn" {
-  aliases = [var.domain_name, "www.${domain.name}"]
+  aliases = [var.domain_name, "www.${var.domain_name}"]
   enabled             = true
   default_root_object = "index.html"
   comment             = "Portfolio site CDN"
@@ -22,9 +22,10 @@ resource "aws_cloudfront_distribution" "cdn" {
     target_origin_id       = "s3-portfolio" #send traffic to this origin
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD"]
-    cached_methods         = ["HTTPS", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
     compress               = true
     default_ttl            = 86400
+    max_ttl = 31536000    
 
     forwarded_values {
       query_string = false
@@ -77,5 +78,5 @@ data "aws_iam_policy_document" "allow_cloudfront" {
 }
 resource "aws_s3_bucket_policy" "allow_cloudfront" {
   bucket = var.bucket_id
-  policy = data.aws_iam_policy_document.allow_cloudfront
+  policy = data.aws_iam_policy_document.allow_cloudfront.json
 }

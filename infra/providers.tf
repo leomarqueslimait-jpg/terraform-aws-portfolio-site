@@ -8,10 +8,9 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = var.state_bucket_name
-    key            = portfolio / terraform.tfstate
+    key            = "bootstrap-portfolio-leonardomarqueslima.com/terraform.tfstate"
     region         = "us-east-1"
-    dynamodb_table = var.dynamodb_table_name
+    use_lockfile = true
     encrypt        = true
   }
 }

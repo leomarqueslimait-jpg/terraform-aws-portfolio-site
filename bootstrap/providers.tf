@@ -9,9 +9,9 @@ terraform {
 
   backend "s3" {
     bucket         = "projects-tf-state-new"
-    key            = "portfolio-website/terraform.tfstate"
+    key            = "portfolio-leonardomarqueslima.com/terraform.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "tf-state-lock"
+    use_lockfile = true
     encrypt        = true
   }
 }

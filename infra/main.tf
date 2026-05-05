@@ -1,6 +1,6 @@
 locals {
   tags = {
-    Project     = "portfolio"
+    Project     = "leonardomarqueslima-portfolio-site"
     environment = "prod"
     Owner       = "LeonardoMarques"
     ManagedBy   = "Terraform"
@@ -10,7 +10,7 @@ locals {
 
 module "s3" {
   source              = "../modules/s3"
-  website_bucket_name = var.website_bucket_name
+  website_bucket_name = var.website_bucket_name #must be same as project name
   tags                = local.tags
 }
 

@@ -5,7 +5,7 @@ output "bucket_id" {
 
 output "bucket_arn" {
   description = "ARN of the S3 bucket - used by CloudFront bucket policy"
-  value       = aws_s3_bucket.website.arn
+  value       = aws_s3_bucket.static_website.arn
 }
 
 output "bucket_regional_domain" {

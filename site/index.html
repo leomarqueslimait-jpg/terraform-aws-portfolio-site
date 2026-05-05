@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Leonardo Marquês — Cloud Infrastructure Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #080b10;
+    --bg2: #0d1117;
+    --bg3: #111827;
+    --accent: #00ffe0;
+    --accent2: #0066ff;
+    --accent3: #7c3aed;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: rgba(0,255,224,0.15);
+    --font-display: 'Syne', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-display);
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,224,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,224,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 4rem;
+    background: rgba(8,11,16,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 4rem 4rem;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,255,224,0.07) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .hero-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .hero-label::before {
+    content: '';
+    display: block;
+    width: 40px; height: 1px;
+    background: var(--accent);
+  }
+  .hero-name {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  .hero-name .line2 {
+    -webkit-text-stroke: 1px rgba(0,255,224,0.5);
+    color: transparent;
+  }
+  .hero-tagline {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+  }
+  .hero-tagline span { color: var(--accent); }
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 2rem;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,255,224,0.3);
+  }
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--accent);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-outline:hover {
+    background: rgba(0,255,224,0.08);
+    transform: translateY(-2px);
+  }
+  .hero-badges {
+    position: absolute;
+    right: 4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .badge {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border);
+    background: rgba(13,17,23,0.8);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: pulse-border 3s ease-in-out infinite;
+  }
+  .badge:nth-child(2) { animation-delay: 1s; }
+  .badge:nth-child(3) { animation-delay: 2s; }
+  @keyframes pulse-border {
+    0%, 100% { border-color: rgba(0,255,224,0.15); }
+    50% { border-color: rgba(0,255,224,0.5); }
+  }
+
+  /* SECTIONS */
+  section { position: relative; z-index: 1; padding: 6rem 4rem; }
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .section-label::after {
+    content: '';
+    display: block;
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 3rem;
+    line-height: 1.1;
+  }
+
+  /* ABOUT */
+  #about { background: var(--bg2); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  .about-text p {
+    color: var(--muted);
+    line-height: 1.9;
+    font-size: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .about-text p span { color: var(--text); }
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .stat {
+    background: var(--bg2);
+    padding: 2rem;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  /* SKILLS */
+  #skills { background: var(--bg); }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .skill-card {
+    background: var(--bg);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
+  .skill-card:hover { background: var(--bg3); }
+  .skill-icon {
+    width: 40px; height: 40px;
+    background: rgba(0,255,224,0.08);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 1.25rem;
+  }
+  .skill-name {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+  .skill-desc {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1rem;
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    padding: 0.2rem 0.6rem;
+    background: rgba(0,255,224,0.06);
+    border: 1px solid rgba(0,255,224,0.15);
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .cert-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    margin-top: 3rem;
+    margin-right: 1rem;
+    border: 1px solid rgba(0,102,255,0.4);
+    background: rgba(0,102,255,0.06);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: #60a5fa;
+    letter-spacing: 0.05em;
+  }
+
+  /* PROJECTS */
+  #projects { background: var(--bg2); }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .project-card {
+    background: var(--bg2);
+    padding: 2.5rem;
+    position: relative;
+    transition: background 0.2s;
+    overflow: hidden;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .project-card:hover::before { transform: scaleX(1); }
+  .project-card:hover { background: var(--bg3); }
+  .project-num {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.1em;
+  }
+  .project-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+  .project-desc {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+  .project-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: auto;
+  }
+  .project-link {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: opacity 0.2s;
+  }
+  .project-link:hover { opacity: 0.7; }
+
+  /* CONTACT */
+  #contact { background: var(--bg); }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  .contact-info p {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.9;
+    margin-bottom: 2rem;
+  }
+  .contact-detail {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .contact-detail span { color: var(--accent); }
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .form-input, .form-textarea {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    padding: 0.85rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .form-input:focus, .form-textarea:focus {
+    border-color: var(--accent);
+  }
+  .form-textarea { resize: vertical; min-height: 130px; }
+  .form-status {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.75rem 1rem;
+    display: none;
+  }
+  .form-status.success { background: rgba(0,255,224,0.08); border: 1px solid rgba(0,255,224,0.3); color: var(--accent); display: block; }
+  .form-status.error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); color: #f87171; display: block; }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer p {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+  footer span { color: var(--accent); }
+
+  /* SCROLL ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    section { padding: 4rem 1.5rem; }
+    #hero { padding: 7rem 1.5rem 4rem; }
+    .hero-badges { display: none; }
+    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .form-row { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">lm@cloud:~$</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="resume.pdf" download>Resume ↓</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-label">Available for freelance & full-time</div>
+  <h1 class="hero-name">
+    Leonardo<br>
+    <span class="line2">Marquês</span>
+  </h1>
+  <p class="hero-tagline">
+    Cloud Infrastructure Engineer specializing in<br>
+    <span>AWS</span> · <span>Terraform</span> · <span>Network Architecture</span><br>
+    Based in Frisco, TX · English & Portuguese
+  </p>
+  <div class="hero-cta">
+    <a href="#contact" class="btn-primary">Hire me →</a>
+    <a href="#projects" class="btn-outline">View projects</a>
+  </div>
+  <div class="hero-badges">
+    <div class="badge">✓ AWS SAA</div>
+    <div class="badge">✓ CCNA</div>
+    <div class="badge">✓ Terraform</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">01 — About</div>
+  <h2 class="section-title">Builder of<br>cloud infrastructure.</h2>
+  <div class="about-grid fade-up">
+    <div class="about-text">
+      <p>I'm a <span>Cloud Infrastructure Engineer</span> focused on AWS and Infrastructure as Code. I design and deploy production-grade cloud environments — from VPCs and hub-and-spoke networking to serverless backends and CI/CD pipelines.</p>
+      <p>With a background in networking (CCNA) and cloud architecture (AWS SAA), I bridge the gap between <span>network fundamentals and modern cloud-native infrastructure</span>.</p>
+      <p>I'm bilingual in <span>English and Portuguese</span>, giving me an edge working with LATAM teams and clients across the Americas.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat">
+        <span class="stat-num">2</span>
+        <span class="stat-label">Certifications</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">AWS</span>
+        <span class="stat-label">Primary Cloud</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">IaC</span>
+        <span class="stat-label">Terraform First</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">2x</span>
+        <span class="stat-label">Languages</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">02 — Skills & Certs</div>
+  <h2 class="section-title">What I work with.</h2>
+  <div class="skills-grid fade-up">
+    <div class="skill-card">
+      <div class="skill-icon">☁</div>
+      <div class="skill-name">AWS Cloud</div>
+      <div class="skill-desc">Designing and deploying production infrastructure across core AWS services.</div>
+      <div class="skill-tags">
+        <span class="tag">EC2</span><span class="tag">VPC</span><span class="tag">S3</span>
+        <span class="tag">RDS</span><span class="tag">Lambda</span><span class="tag">ALB</span>
+        <span class="tag">CloudFront</span><span class="tag">Route53</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">⬡</div>
+      <div class="skill-name">Terraform / IaC</div>
+      <div class="skill-desc">Infrastructure as Code with reusable modules, remote state, and CI/CD integration.</div>
+      <div class="skill-tags">
+        <span class="tag">Modules</span><span class="tag">Remote State</span>
+        <span class="tag">S3+DynamoDB</span><span class="tag">Workspaces</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">⬡</div>
+      <div class="skill-name">Networking</div>
+      <div class="skill-desc">Deep networking fundamentals applied to cloud — from on-prem to AWS VPC design.</div>
+      <div class="skill-tags">
+        <span class="tag">Hub & Spoke</span><span class="tag">Transit GW</span>
+        <span class="tag">BGP</span><span class="tag">VPN</span><span class="tag">Subnetting</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">⚙</div>
+      <div class="skill-name">DevOps & CI/CD</div>
+      <div class="skill-desc">Automating deployments with GitHub Actions pipelines and OIDC-based AWS auth.</div>
+      <div class="skill-tags">
+        <span class="tag">GitHub Actions</span><span class="tag">OIDC</span>
+        <span class="tag">Docker</span><span class="tag">ECS</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🔒</div>
+      <div class="skill-name">Security & IAM</div>
+      <div class="skill-desc">Least-privilege IAM, security groups, CloudTrail, and compliance-ready configurations.</div>
+      <div class="skill-tags">
+        <span class="tag">IAM</span><span class="tag">SCPs</span>
+        <span class="tag">CloudTrail</span><span class="tag">KMS</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">λ</div>
+      <div class="skill-name">Serverless</div>
+      <div class="skill-desc">Event-driven backends using Lambda, API Gateway, and DynamoDB — zero server management.</div>
+      <div class="skill-tags">
+        <span class="tag">Lambda</span><span class="tag">API Gateway</span>
+        <span class="tag">DynamoDB</span><span class="tag">SES</span>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="cert-badge">✓ AWS Certified Solutions Architect – Associate</div>
+    <div class="cert-badge">✓ Cisco CCNA</div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">03 — Projects</div>
+  <h2 class="section-title">What I've built.</h2>
+  <div class="projects-grid fade-up">
+    <div class="project-card">
+      <div class="project-num">PROJECT 01 — NETWORKING / IaC</div>
+      <div class="project-title">AWS Hub-and-Spoke Network</div>
+      <div class="project-desc">Production-grade hub-and-spoke topology on AWS using Transit Gateway, reusable Terraform modules, and remote state with S3 + DynamoDB locking.</div>
+      <div class="skill-tags">
+        <span class="tag">Terraform</span><span class="tag">Transit GW</span><span class="tag">VPC</span><span class="tag">Remote State</span>
+      </div>
+      <div class="project-links">
+        <a class="project-link" href="https://github.com/leomarqueslimait-jpg/terraform-aws-hub-spoke" target="_blank">↗ GitHub</a>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">PROJECT 02 — SERVERLESS</div>
+      <div class="project-title">Portfolio Site & Contact API</div>
+      <div class="project-desc">This site — fully serverless. Static files on S3 + CloudFront. Contact form powered by Lambda + API Gateway + DynamoDB. 100% deployed with Terraform.</div>
+      <div class="skill-tags">
+        <span class="tag">S3</span><span class="tag">CloudFront</span><span class="tag">Lambda</span><span class="tag">API GW</span><span class="tag">DynamoDB</span>
+      </div>
+      <div class="project-links">
+        <a class="project-link" href="https://github.com/leomarqueslimait-jpg" target="_blank">↗ GitHub</a>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">PROJECT 03 — COMING SOON</div>
+      <div class="project-title">CI/CD Pipeline + Terraform Automation</div>
+      <div class="project-desc">GitHub Actions pipeline with OIDC federation to AWS. Runs terraform plan on PRs and terraform apply on merge. Includes tfsec scanning and Slack notifications.</div>
+      <div class="skill-tags">
+        <span class="tag">GitHub Actions</span><span class="tag">OIDC</span><span class="tag">Terraform</span><span class="tag">tfsec</span>
+      </div>
+      <div class="project-links">
+        <a class="project-link" href="https://github.com/leomarqueslimait-jpg" target="_blank">↗ GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">04 — Contact</div>
+  <h2 class="section-title">Let's work<br>together.</h2>
+  <div class="contact-grid fade-up">
+    <div class="contact-info">
+      <p>Available for freelance cloud infrastructure projects, contract work, and full-time roles. Based in Frisco, TX — open to remote.</p>
+      <div class="contact-detail"><span>loc</span> Frisco, Texas — Remote OK</div>
+      <div class="contact-detail"><span>lang</span> English · Portuguese</div>
+      <div class="contact-detail"><span>avail</span> Open to new projects</div>
+      <div class="contact-detail"><span>gh</span> github.com/leomarqueslimait-jpg</div>
+    </div>
+    <form class="contact-form" id="contactForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input class="form-input" type="text" id="name" required placeholder="Your name"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="email" required placeholder="your@email.com"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Subject</label>
+        <input class="form-input" type="text" id="subject" placeholder="Project inquiry, job opportunity..."/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-textarea" id="message" required placeholder="Tell me about your project or role..."></textarea>
+      </div>
+      <div class="form-status" id="formStatus"></div>
+      <button type="submit" class="btn-primary" id="submitBtn">Send message →</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 <span>Leonardo Marquês</span>. Built on AWS with Terraform.</p>
+  <p>Frisco, TX · <span>lm@cloud</span></p>
+</footer>
+
+<script>
+  // Scroll fade-up
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Contact form — calls API Gateway endpoint
+  const API_ENDPOINT = 'YOUR_API_GATEWAY_URL'; // replaced by Terraform output
+
+  document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const status = document.getElementById('formStatus');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    status.className = 'form-status';
+
+    const body = {
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      subject: document.getElementById('subject').value,
+      message: document.getElementById('message').value
+    };
+
+    try {
+      const res = await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (res.ok) {
+        status.textContent = '✓ Message sent! I\'ll get back to you within 24 hours.';
+        status.className = 'form-status success';
+        e.target.reset();
+      } else {
+        throw new Error('Server error');
+      }
+    } catch {
+      status.textContent = '✗ Something went wrong. Try emailing directly via GitHub.';
+      status.className = 'form-status error';
+    }
+    btn.textContent = 'Send message →';
+    btn.disabled = false;
+  });
+</script>
+</body>
+</html>
