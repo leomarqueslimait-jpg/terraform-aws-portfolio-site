@@ -6,6 +6,17 @@ The goal of this project is to mimic a modern workflow of a team working on a st
 
 This project is split into three layers: **Bootstrap**, **Modules**, and **Infrastructure**. Bootstrap is applied once by a DevOps engineer before the pipeline takes over. Modules are reusable building blocks. Infrastructure wires the modules together into the deployed environment.
 
+## Why OIDC and IAM roles live in bootstrap, not as a module
+
+The initial design had OIDC and IAM roles inside `modules/oidc/` called from `infra/`. This created a deadlock — the pipeline needs the roles to exist to run `infra/`, but the roles only exist after `infra/` runs.
+
+Moving them to bootstrap as flat resources (not a module) solves this cleanly:
+
+- **Not a module** — modules make sense when code is reused across multiple callers. OIDC and the two GitHub Actions roles are only ever created once, in one place. A module would add indirection with no benefit.
+- **Flat resources in bootstrap** — the OIDC provider and both IAM roles live directly in `bootstrap/main.tf`, created once locally before the pipeline ever runs.
+- **Reusability without hardcoding** — instead of passing `static_website_bucket_arn` and `cloudfront_distribution_arn` as inputs (which don't exist at bootstrap time), the bucket name is derived from a local and CloudFront permissions start broad then are tightened to the specific distribution ARN by `infra/` on first apply.
+- **Automatic cache invalidation** — every push to main triggers the deploy role to run `cloudfront create-invalidation`, purging only updated objects so users always get the latest version and never stale cached content. This is why the deploy role needs `cloudfront:CreateInvalidation` — scoped first to all distributions in the account, then tightened to the specific distribution after infra creates it.
+
 ---
 
 ## Architecture
