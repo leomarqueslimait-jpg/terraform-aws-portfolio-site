@@ -58,10 +58,19 @@ data "aws_iam_policy_document" "terraform_permissions" {
   }
 
   statement {
-    effect    = "Allow"
-    actions   = ["s3:ListBucket"]
-    resources = ["arn:aws:s3:::${var.tfstate_bucket}"]
+  effect    = "Allow"
+  actions   = ["s3:ListBucket"]
+  resources = ["arn:aws:s3:::${var.tfstate_bucket}"]
+  condition {
+    test     = "StringLike"
+    variable = "s3:prefix"
+    values   = [
+      "${var.tf_state_bucket_key}/terraform.tfstate",
+      "env:/"
+    ]
   }
+}
+
 
   # Site S3 bucket - scoped to project naming convention
   # IMPORTANT: your site bucket name in infra/ must be var.project_name
