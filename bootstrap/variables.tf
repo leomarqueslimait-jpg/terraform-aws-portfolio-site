@@ -10,7 +10,7 @@ variable "github_repo" {
 
 variable "project_name" {
   description = "Project name used to scope IAM permissions by naming convention (e.g. 'portfolio')"
-type = string
+  type        = string
 }
 
 variable "tfstate_bucket" {

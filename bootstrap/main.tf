@@ -1,5 +1,5 @@
 locals {
-    website_bucket_name = var.project_name
+  website_bucket_name = var.project_name
 }
 
 #----OIDC Provider------------------------------------
@@ -67,7 +67,7 @@ data "aws_iam_policy_document" "terraform_permissions" {
   # IMPORTANT: your site bucket name in infra/ must be var.project_name
   # This is tightened to the specific ARN by infra/ after first apply
   statement {
-    effect = "Allow"
+    effect  = "Allow"
     actions = ["s3:*"]
     resources = [
       "arn:aws:s3:::${local.website_bucket_name}*",
@@ -99,9 +99,9 @@ data "aws_iam_policy_document" "terraform_permissions" {
     actions = ["iam:*"]
     resources = [
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.project_name}-*",
-"arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/github-actions-*",
-"arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.project_name}-*",
-"arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/*"
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/github-actions-*",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.project_name}-*",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/*"
     ]
   }
 }

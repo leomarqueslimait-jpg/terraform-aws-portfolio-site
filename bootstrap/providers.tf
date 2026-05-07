@@ -8,11 +8,11 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "projects-tf-state-new"
-    key            = "portfolio-leonardomarqueslima.com/terraform.tfstate"
-    region         = "us-east-1"
+    key          = "bootstrap-portfolio-leonardomarqueslima.com/terraform.tfstate"
+    bucket       = "projects-tf-state-new"
+    region       = "us-east-1"
     use_lockfile = true
-    encrypt        = true
+    encrypt      = true
   }
 }
 
