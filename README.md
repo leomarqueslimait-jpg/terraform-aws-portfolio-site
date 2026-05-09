@@ -206,6 +206,42 @@ No hardcoded account IDs, bucket names, or ARNs in the codebase — all environm
 
 ---
 
+## Lessons Learned — Things to Watch Next Time
+
+### IAM scoping vs Terraform's S3 backend behavior
+
+My instinct was to lock down the Terraform role to the exact state file — something like:
+
+```
+arn:aws:s3:::projects-tf-state-new/bootstrap-portfolio.../terraform.tfstate
+```
+
+Least privilege, clean, makes sense in theory. The problem is that Terraform's S3 backend doesn't just read and write one file. Every time it initializes, it also lists the `env:/` prefix to check for workspaces, and lists the parent prefix to verify the state file exists. All of that is `ListBucket` — and `ListBucket` is a bucket-level permission in AWS. You can't scope it to a single file, only to a prefix.
+
+So the correct split is:
+- Object-level actions (`GetObject`, `PutObject`, `DeleteObject`) → scoped to your prefix with `/*`
+- `ListBucket` → must be bucket-level, use a prefix condition to limit what it can see, and explicitly allow `env:/*`
+
+The security you actually get comes from scoping the object actions to your prefix — other projects' state files are protected even if the role can list the bucket. `ListBucket` and object access are two separate permission layers in S3 and need to be treated separately.
+
+### Bootstrap changes need a local apply before the pipeline can use them
+
+This one cost a few hours. When you edit IAM policies in `bootstrap/main.tf`, those changes don't reach AWS until you run `terraform apply` locally. The pipeline assumes a role — but it gets whatever policy is actually attached to that role in AWS at that moment, not what's in your local files.
+
+The error (`SignatureDoesNotMatch` → then `AccessDenied`) was misleading because it pointed at credentials and region, not permissions. Next time: if the pipeline is 403ing on S3 and local AWS CLI works fine with the same role, check whether bootstrap was applied after the last IAM change.
+
+The rule going forward:
+- `bootstrap/` changes → always apply locally, it controls the roles and state bucket everything else depends on
+- `infra/` changes → let the pipeline handle it, that's what it's there for
+
+### OIDC and IAM roles belong in bootstrap, not in a module
+
+The initial design had OIDC and the IAM roles inside `modules/oidc/` called from `infra/`. That created a deadlock — the pipeline needs the roles to exist to run `infra/`, but the roles only exist after `infra/` runs. No way out of that loop.
+
+Moving them to `bootstrap/` as flat resources solved it. I also had to think carefully about the CloudFront permissions — at bootstrap time the distribution doesn't exist yet, so I couldn't scope the IAM policy to a specific ARN. I started broad (all distributions in the account) and tightened it to the specific distribution ARN on the first `infra/` apply. Accepted tradeoff — `cloudfront:CreateInvalidation` is non-destructive and the broad window is only the few minutes between bootstrap and first infra apply.
+
+---
+
 ## GitHub Secrets Reference
 
 | Secret | Description |

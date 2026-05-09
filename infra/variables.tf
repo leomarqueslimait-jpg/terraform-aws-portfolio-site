@@ -1,7 +1,7 @@
 
 
 variable "contact_table_name" {
-  description = "Name of the DynamoDB lock table in bootstrap folder to be used by backend s3"
+  description = "Name of the DynamoDB contacts table"
   type        = string
 }
 
