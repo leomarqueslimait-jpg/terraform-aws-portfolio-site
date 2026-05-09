@@ -72,7 +72,7 @@ data "aws_iam_policy_document" "terraform_permissions" {
   }
 }
   
-}
+
 
 
   # Site S3 bucket - scoped to project naming convention
