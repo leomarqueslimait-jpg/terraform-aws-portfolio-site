@@ -77,7 +77,7 @@ data "aws_iam_policy_document" "terraform_permissions" {
     actions   = ["apigateway:*", "logs:*", "iam:*"]
     resources = ["*"]
   }
-}
+
   
 
   # Site S3 bucket - scoped to project naming convention

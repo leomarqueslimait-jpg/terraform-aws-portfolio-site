@@ -32,6 +32,13 @@ jobs:
             with:
                 terraform_version: "~>1.14"
 
+          - name: Debug env                          # ← add this
+            run: |
+              echo "AWS_REGION=$AWS_REGION"
+              echo "TF_STATE_BUCKET=${{ secrets.TF_STATE_BUCKET }}"
+              aws sts get-caller-identity
+              aws s3 ls s3://${{ secrets.TF_STATE_BUCKET }} --recursive
+
           - name: Terraform init
             working-directory: infra
             run: terraform init -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" 
