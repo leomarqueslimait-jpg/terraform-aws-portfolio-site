@@ -5,7 +5,7 @@ data "archive_file" "lambda_zip" {
 }
 
 resource "aws_lambda_function" "contact" {
-  function_name = "portfolio-contact-form"
+  function_name = "leonardomarqueslima-portfolio-site-lambda"
   role          = var.lambda_role_arn
   runtime       = "python3.12"
   handler       = "handler.lambda_handler"
