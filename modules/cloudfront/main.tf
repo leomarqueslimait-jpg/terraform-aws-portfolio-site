@@ -7,7 +7,7 @@ resource "aws_cloudfront_origin_access_control" "oac" {
 }
 
 resource "aws_cloudfront_distribution" "cdn" {
-  aliases = [var.domain_name, "www.${var.domain_name}"]
+  aliases             = [var.domain_name, "www.${var.domain_name}"]
   enabled             = true
   default_root_object = "index.html"
   comment             = "Portfolio site CDN"
@@ -25,7 +25,7 @@ resource "aws_cloudfront_distribution" "cdn" {
     cached_methods         = ["GET", "HEAD"]
     compress               = true
     default_ttl            = 86400
-    max_ttl = 31536000    
+    max_ttl                = 31536000
 
     forwarded_values {
       query_string = false

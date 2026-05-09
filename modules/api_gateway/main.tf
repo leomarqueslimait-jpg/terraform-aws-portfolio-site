@@ -42,7 +42,7 @@ resource "aws_api_gateway_integration" "lambda_post" {
 }
 
 resource "aws_api_gateway_integration" "lambda_options" {
-  rest_api_id = aws_api_gateway_rest_api.contacts.id
+  rest_api_id             = aws_api_gateway_rest_api.contacts.id
   resource_id             = aws_api_gateway_resource.contacts.id
   integration_http_method = "POST"
   http_method             = aws_api_gateway_method.options.http_method
@@ -55,7 +55,7 @@ resource "aws_api_gateway_integration" "lambda_options" {
 # OPTIONS method response -tells browser which CORS headers to expect
 resource "aws_api_gateway_method_response" "options_200" {
   rest_api_id = aws_api_gateway_rest_api.contacts.id
-resource_id = aws_api_gateway_resource.contacts.id
+  resource_id = aws_api_gateway_resource.contacts.id
   http_method = aws_api_gateway_method.options.http_method
   status_code = "200"
 

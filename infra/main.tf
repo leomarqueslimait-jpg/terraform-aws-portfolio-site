@@ -19,8 +19,8 @@ module "cloudfront" {
   bucket_regional_domain = module.s3.bucket_regional_domain
   bucket_arn             = module.s3.bucket_arn
   bucket_id              = module.s3.bucket_id
-  acm_certificate_arn = module.route53.acm_certificate_arn
-  domain_name = "leonardomarqueslima.com"
+  acm_certificate_arn    = module.route53.acm_certificate_arn
+  domain_name            = "leonardomarqueslima.com"
   tags                   = local.tags
 
 }
@@ -54,11 +54,11 @@ module "api_gateway" {
 }
 
 module "route53" {
-  source = "../modules/route53"
-  domain_name = "leonardomarqueslima.com"
-  cloudfront_distribution_domain = module.cloudfront.distribution_domain
+  source                                 = "../modules/route53"
+  domain_name                            = "leonardomarqueslima.com"
+  cloudfront_distribution_domain         = module.cloudfront.distribution_domain
   cloudfront_distribution_hosted_zone_id = module.cloudfront.cloudfront_distribution_hosted_zone_id
-  tags = local.tags
+  tags                                   = local.tags
 
   providers = {
     aws.us_east_1 = aws.us_east_1
