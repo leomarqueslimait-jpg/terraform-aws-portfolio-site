@@ -68,7 +68,7 @@ jobs:
                 aws-region: ${{ env.AWS_REGION }}
 
             - name: Sync site to S3
-              run: aws s3 sync site/ s3://${{ secrets.BUCKET_NAME }} --delete
+              run: aws s3 sync site/ s3://${{ secrets.SITE_BUCKET_NAME }} --delete
 
             - name: Invalidate CloudFront cache
               run: |

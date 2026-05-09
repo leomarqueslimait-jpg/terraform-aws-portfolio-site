@@ -3,15 +3,15 @@ output "tfstate_bucket" {
   value       = var.tfstate_bucket
 }
 
-output "terraform_role_arn" {
+output "github_terraform_role_arn" {
   description = "Paste into GitHub secrets as TERRAFORM_ROLE_ARN"
-  value       = aws_iam_role.terraform.arn
+  value       = aws_iam_role.github_terraform_role.arn
   sensitive   = true
 }
 
-output "deploy_role_arn" {
+output "github_deploy_role_arn" {
   description = "Paste into GitHub secrets as DEPLOY_ROLE_ARN"
-  value       = aws_iam_role.github_deploy.arn
+  value       = aws_iam_role.github_deploy_role.arn
   sensitive   = true
 }
 

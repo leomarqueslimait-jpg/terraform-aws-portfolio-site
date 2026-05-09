@@ -16,3 +16,7 @@ variable "website_bucket_name" {
   type        = string
 }
 
+variable "project_name" {
+  description = "Name of the project - it has to be the same as in bootstrap"
+  type        = string
+}

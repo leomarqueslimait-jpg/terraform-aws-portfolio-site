@@ -1,5 +1,9 @@
 locals {
-  website_bucket_name = var.project_name
+  website_bucket_name        = var.project_name
+  terraform_role_name        = "${var.project_name}-github-terraform-role"
+  terraform_permissions_name = "${var.project_name}-github-terraform-permissions"
+  deploy_role_name           = "${var.project_name}-github-deploy-role"
+  deploy_permissions_name    = "${var.project_name}-github-deploy-permissions"
 }
 
 #----OIDC Provider------------------------------------
@@ -11,7 +15,7 @@ resource "aws_iam_openid_connect_provider" "github" {
 
 #-----Shared Trust Policy-------------------------------
 # Both roles use the same trust policy - only repo on main can assume them
-data "aws_iam_policy_document" "github_assume_role" {
+data "aws_iam_policy_document" "pipeline_trust_policy" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     effect  = "Allow"
@@ -66,10 +70,10 @@ data "aws_iam_policy_document" "terraform_permissions" {
 
   # CloudFront - scoped to account (tightened to specific ARN after first infra apply)
   statement {
-    effect    = "Allow"
-    actions   = ["cloudfront:*"]
+    effect  = "Allow"
+    actions = ["cloudfront:*"]
     resources = ["arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/*",
-                 "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:origin-access-control/*"]
+    "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:origin-access-control/*"]
   }
 
   # DynamoDB - scoped to project table
@@ -88,8 +92,8 @@ data "aws_iam_policy_document" "terraform_permissions" {
 
   # Route53 - scoped to account
   statement {
-    effect    = "Allow"
-    actions   = ["route53:*"]
+    effect  = "Allow"
+    actions = ["route53:*"]
     resources = [
       "arn:aws:route53:::hostedzone/*",
       "arn:aws:route53:::change/*"
@@ -116,7 +120,6 @@ data "aws_iam_policy_document" "terraform_permissions" {
     actions = ["iam:*"]
     resources = [
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.project_name}-*",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/github-actions-*",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.project_name}-*",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/*"
     ]
@@ -130,15 +133,15 @@ data "aws_iam_policy_document" "terraform_permissions" {
   }
 }
 
-resource "aws_iam_role" "terraform" {
-  name               = "github-actions-terraform"
-  assume_role_policy = data.aws_iam_policy_document.github_assume_role.json
-  tags               = merge(var.tags, { Name = "github-actions-terraform" })
+resource "aws_iam_role" "github_terraform_role" {
+  name               = local.terraform_role_name
+  assume_role_policy = data.aws_iam_policy_document.pipeline_trust_policy.json
+  tags               = merge(var.tags, { Name = local.terraform_role_name })
 }
 
-resource "aws_iam_role_policy" "terraform_permissions" {
-  name   = "terraform-permissions"
-  role   = aws_iam_role.terraform.id
+resource "aws_iam_role_policy" "github_terraform_permissions" {
+  name   = local.terraform_permissions_name
+  role   = aws_iam_role.github_terraform_role.id
   policy = data.aws_iam_policy_document.terraform_permissions.json
 }
 
@@ -169,14 +172,14 @@ data "aws_iam_policy_document" "github_deploy_permissions" {
   }
 }
 
-resource "aws_iam_role" "github_deploy" {
-  name               = "github-actions-deploy"
-  assume_role_policy = data.aws_iam_policy_document.github_assume_role.json
-  tags               = merge(var.tags, { Name = "github-actions-deploy-role" })
+resource "aws_iam_role" "github_deploy_role" {
+  name               = local.deploy_role_name
+  assume_role_policy = data.aws_iam_policy_document.pipeline_trust_policy.json
+  tags               = merge(var.tags, { Name = local.deploy_role_name })
 }
 
 resource "aws_iam_role_policy" "github_deploy_permissions" {
-  name   = "github-deploy-permissions"
-  role   = aws_iam_role.github_deploy.id
+  name   = local.deploy_permissions_name
+  role   = aws_iam_role.github_deploy_role.id
   policy = data.aws_iam_policy_document.github_deploy_permissions.json
 }
