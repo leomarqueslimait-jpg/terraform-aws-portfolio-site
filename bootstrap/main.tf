@@ -53,7 +53,7 @@ data "aws_iam_policy_document" "terraform_permissions" {
       "s3:DeleteObject"
     ]
     resources = [
-      "arn:aws:s3:::${var.tfstate_bucket}/${var.tf_state_bucket_key}/terraform.tfstate"
+      "arn:aws:s3:::${var.tfstate_bucket}/${var.tf_state_bucket_key}/*"
     ]
   }
 
@@ -61,6 +61,16 @@ data "aws_iam_policy_document" "terraform_permissions" {
   effect    = "Allow"
   actions   = ["s3:ListBucket"]
   resources = ["arn:aws:s3:::${var.tfstate_bucket}"]
+
+  condition {
+    test     = "StringLike"
+    variable = "s3:prefix"
+    values = [
+      "${var.tf_state_bucket_key}/*",
+      "env:/*"
+    ]
+  }
+}
   
 }
 
