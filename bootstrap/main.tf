@@ -44,36 +44,41 @@ data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "terraform_permissions" {
 
-  # State bucket - fully scoped to exact state file
+  # Full access to state bucket
   statement {
-    effect = "Allow"
-    actions = [
-      "s3:GetObject",
-      "s3:PutObject",
-      "s3:DeleteObject"
-    ]
+    effect    = "Allow"
+    actions   = ["s3:*"]
     resources = [
-      "arn:aws:s3:::${var.tfstate_bucket}/${var.tf_state_bucket_key}/*"
+      "arn:aws:s3:::${var.tfstate_bucket}",
+      "arn:aws:s3:::${var.tfstate_bucket}/*"
     ]
   }
 
+  # Full access to site bucket
   statement {
-  effect    = "Allow"
-  actions   = ["s3:ListBucket"]
-  resources = ["arn:aws:s3:::${var.tfstate_bucket}"]
-
-  condition {
-    test     = "StringLike"
-    variable = "s3:prefix"
-    values = [
-      "${var.tf_state_bucket_key}/*",
-      "env:/*"
+    effect    = "Allow"
+    actions   = ["s3:*"]
+    resources = [
+      "arn:aws:s3:::${local.website_bucket_name}",
+      "arn:aws:s3:::${local.website_bucket_name}/*"
     ]
+  }
+
+  # CloudFront
+  statement {
+    effect    = "Allow"
+    actions   = ["cloudfront:*"]
+    resources = ["arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/*"]
+  }
+
+  # IAM, API Gateway, CloudWatch Logs
+  statement {
+    effect    = "Allow"
+    actions   = ["apigateway:*", "logs:*", "iam:*"]
+    resources = ["*"]
   }
 }
   
-
-
 
   # Site S3 bucket - scoped to project naming convention
   # IMPORTANT: your site bucket name in infra/ must be var.project_name
